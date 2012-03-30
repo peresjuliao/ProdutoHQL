@@ -3,6 +3,8 @@ package br.com.teste;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.classic.Session;
 
 import br.com.bean.Produto;
@@ -13,10 +15,32 @@ public class ProdutoTeste {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		// criando o objeto session
+		SessionFactory sessionfactory = new Configuration().configure().buildSessionFactory();
+		Session session = sessionfactory.openSession();
+		
+		Produto iphone = new Produto("IPhone", 100);
+		Produto blackberry = new Produto("BlackBerry", 50);
+		Produto n98 = new Produto("n98 nokia", 20);
+		Produto nexone = new Produto("nexone", 200);
+		
+		// abrindo a transação
+		session.beginTransaction();
+		// session.save(iphone);
+		// session.save(blackberry);
+		// session.save(n98);
+		// session.save(nexone);
+		// session.getTransaction().commit();
+		
+		// exibirProdutos(session);
+		// alias(session);
+		// operadores(session);
+		// delete(session);
+//		 ordernando(session);
+		// somar(session);
+		// atualizar(session);
 	}
-	
+
 	public static void exibirProdutos(Session session) {
 		Query query = session.createQuery("from Produto");
 		List<Produto> lista = query.list();
@@ -24,14 +48,15 @@ public class ProdutoTeste {
 			System.out.println(produto.getNome());
 		}
 	}
-	
+
 	public static void delete(Session session) {
-		Query query = session.createQuery("delete from Produto where quantidade = :qtde");
+		Query query = session
+				.createQuery("delete from Produto where quantidade = :qtde");
 		query.setInteger("qtde", 0);
 		query.executeUpdate();
 		session.getTransaction().commit();
 	}
-	
+
 	public static void ordernando(Session session) {
 		String hql = "from Produto as p order by p.nome asc";
 		Query query = session.createQuery(hql);
@@ -40,7 +65,7 @@ public class ProdutoTeste {
 			System.out.println(produto.getNome());
 		}
 	}
-	
+
 	public static void somar(Session session) {
 		String hql = "select sum(prod.quantidade) from Produto as prod";
 		Query query = session.createQuery(hql);
@@ -49,7 +74,7 @@ public class ProdutoTeste {
 			System.out.println(total);
 		}
 	}
-	
+
 	public static void atualizar(Session session) {
 		String hql = "update Produto set nome = :novonome where nome = :nome";
 		Query query = session.createQuery(hql);
@@ -58,7 +83,7 @@ public class ProdutoTeste {
 		int linha = query.executeUpdate();
 		System.out.println("linha atualizada " + linha);
 	}
-	
+
 	public static void unico(Session session) {
 		String hql = "from Produto where quantidade > 100";
 		Query query = session.createQuery(hql);
